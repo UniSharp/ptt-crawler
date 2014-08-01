@@ -37,7 +37,7 @@ fetch-article = (idx) ->
         return set-timeout (-> fetch-article (if r.status-code==404 => idx + 1 else idx)), 2000
       fs.write-file-sync "data/#board/post/#{key.0}", b
     else idx := idx - 1
-    return if idx == post-queue.length - 1 => post-done! else set-timeout (-> fetch-article idx + 1), 11
+    return if idx == post-queue.length - 1 => post-done! else set-timeout (-> fetch-article idx + 1), 2000
 
 post-list-done = (i) -> 
   fs.write-file-sync "data/#board/post-list.json", JSON.stringify post-list
@@ -72,7 +72,7 @@ fetch-list = (page) ->
     if (page % 30) == 0 =>
       console.log "(write current result: #page records)"
       fs.write-file-sync "data/#board/post-list.json", JSON.stringify post-list
-    set-timeout (-> fetch-list page - 1), 100 + parse-int(Math.random!*300)
+    set-timeout (-> fetch-list page - 1), 100 + parse-int(Math.random!*3000)
 
 fetch-index = ->
   url = "http://www.ptt.cc/bbs/#board/index.html"
@@ -84,7 +84,7 @@ fetch-index = ->
     if !ret => return console.log "cannot find the last list page index. abort."
     list-count := ret.1 
     console.log "total #list-count list pages. "
-    set-timeout (-> fetch-list list-count), 100
+    set-timeout (-> fetch-list list-count), 2000
 
 
 if !fs.exists-sync("data") => fs.mkdir-sync "data"
@@ -96,7 +96,7 @@ console.log "fetching board '#board'..."
 if fs.exists-sync("data/#board/post-list.json") =>
   console.log "previous fetch found. load..."
   post-list = JSON.parse fs.read-file-sync "data/#board/post-list.json"
-  if post-list.page != 0 => fetch-list post-list.page
+  if post-list.page > 3500 => fetch-list post-list.page
   else 
     console.log "previous fetch complete. only syncing latest update..."
     is-sync = true
