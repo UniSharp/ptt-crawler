@@ -19,7 +19,7 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "LiveScript": ">=1.2.0",
+    "LiveScript": "=1.2.0",
     "jade": "=0.27.6",
     "chokidar": "=0.8.0",
     "request": ">=2.34.0",
